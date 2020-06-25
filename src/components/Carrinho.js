@@ -3,8 +3,10 @@ import styled from 'styled-components'
 import { render } from '@testing-library/react';
 
 const DivCarrinho = styled.div`
-    width: 500px;
-    background-color: red;
+    width: 300px;
+    height: 600px;
+    border: 1px solid black;
+    padding: 16px;
 `
 
 class Carrinho extends React.Component {
