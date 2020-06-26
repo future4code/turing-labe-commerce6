@@ -14,6 +14,7 @@ class Carrinho extends React.Component {
   return (
     <DivCarrinho>
       <h1>Carrinho:</h1>
+      <p>Total: <strong>R$</strong></p>
     </DivCarrinho>
   );
   }
