@@ -5,42 +5,36 @@ import Filtro from './components/Filtro'
 import Carrinho from './components/Carrinho'
 import ImagemCarrinho from './components/icones/carrinho.svg'
 
-const ContainerDeProdutos = styled.section `
+const ContainerDeProdutos = styled.section`
   display: flex;
   box-sizing: border-box;
   justify-content: space-between;
-  max-width: 1400px;
+  max-width: 80%;
   margin: 0 auto;
 `;
 
-const DivTopContainer = styled.div `
+const DivTopContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0px 16px;
+  max-width: 1400px;
+  min-width: 1000px;
 `;
 
-const DivBlocosProdutos = styled.div `
+const DivBlocosProdutos = styled.div`
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-evenly;
   padding-bottom: 8px;
+  
 `;
 
-const DivPrincipal = styled.div `
+const DivPrincipal = styled.div`
+
 `
 
-const DivBlocoDeProduto = styled.div `
-  border: 1px dotted black;
-  margin-top: 8px;
-  padding: 8px;
-  button {
-    width: 100%;
-    padding: 4px;
-  }
-`
 
-const DivIconeCarrinho = styled.div `
+const DivIconeCarrinho = styled.div`
   box-shadow: black 0px 0px 5px;
   width: 80px;
   height: 80px;
@@ -63,6 +57,7 @@ class App extends React.Component {
     valorMinimo: "",
     valorMaximo: "",
     buscar: "",
+    arrayCarrinho: [],
 
     arrayProdutos: [
       {
@@ -117,58 +112,79 @@ class App extends React.Component {
   }
 
   renderizaCarrinho = () => {
-    this.setState({componenteCarrinho: !this.state.componenteCarrinho})
+    this.setState({ componenteCarrinho: !this.state.componenteCarrinho })
   }
 
   onChangeMinimo = (event) => {
-    this.setState({valorMinimo: event.target.value})
+    this.setState({ valorMinimo: event.target.value })
   }
 
   onChangeMaximo = (event) => {
-    this.setState({valorMaximo: event.target.value})
+    this.setState({ valorMaximo: event.target.value })
   }
 
   funcaoBuscar = (event) => {
-    this.setState({buscar: event.target.value})
+    this.setState({ buscar: event.target.value })
   }
-  
+
+  adicionaNoCarrinho = () => {
+    const novoProdutoNoCarrinho = {
+      id: this.state.id,
+      nome: this.state.nome,
+      valor:this.state.valor
+    };
+
+    const novoArrayDoCarrinho = [novoProdutoNoCarrinho, ...this.state.arrayCarrinho]
+    this.setState({arrayCarrinho: novoArrayDoCarrinho});
+
+  };
+
   render() {
- const itensFiltrados = this.state.arrayProdutos.filter((produto) => {
-   if (this.state.buscar !== "" && this.state.buscar === produto.nome) {
-     return produto
-   }
- })
-  return (
-    <div>
-      <Filtro 
-        inputValorMinimo={this.onChangeMinimo}
-        inputValorMaximo={this.onChangeMaximo}
-        inputBuscar={this.funcaoBuscar}
-      />
-      <ContainerDeProdutos>
-        <DivPrincipal>
-          <DivTopContainer>
-            <p>Quantidade de produtos:</p>
-            <select>
-              <option>Preco: Crescente</option>
-              <option>Preco: Decrescente</option>
-            </select>
-          </DivTopContainer>
-          <DivBlocosProdutos>
+
+    const itensFiltrados = this.state.arrayProdutos.filter((produto) => {
+      if (this.state.valorMinimo === "" && this.state.valorMaximo === "" && this.state.buscar === "") {
+        return produto
+      } else if ((this.state.valorMinimo <= produto.valor && this.state.valorMaximo >= produto.valor)) {
+        return produto
+      } else if (this.valorMinimo <= produto.valor) {
+        return produto
+      } else if (this.valorMaximo >= produto.valor) {
+        return produto
+      } else if (this.state.buscar.toLowerCase() === produto.nome.toLowerCase()) {
+        return produto
+      }
+    })
+    return (
+      <div>
+        <Filtro
+          inputValorMinimo={this.onChangeMinimo}
+          inputValorMaximo={this.onChangeMaximo}
+          inputBuscar={this.funcaoBuscar}
+        />
+        <ContainerDeProdutos>
+          <DivPrincipal>
+            <DivTopContainer>
+              <p>Quantidade de produtos: {itensFiltrados.length}</p>
+              <select>
+                <option>Preco: Crescente</option>
+                <option>Preco: Decrescente</option>
+              </select>
+            </DivTopContainer>
+            <DivBlocosProdutos>
               {itensFiltrados.map((elemento) => {
-                return <Produto lista = {elemento} />
+                return <Produto key={elemento.id} lista={elemento} />
               })}
-          </DivBlocosProdutos>
-        </DivPrincipal>
+            </DivBlocosProdutos>
+          </DivPrincipal>
           <div>
-          {this.state.componenteCarrinho && <Carrinho />}
+            {this.state.componenteCarrinho && <Carrinho inforProduto={this.state.arrayProdutos} />}
           </div>
-      </ContainerDeProdutos>
-      <DivIconeCarrinho onClick={this.renderizaCarrinho}>
-        <img src={ImagemCarrinho} />
-      </DivIconeCarrinho>
-    </div>
-  );
+        </ContainerDeProdutos>
+        <DivIconeCarrinho onClick={this.renderizaCarrinho}>
+          <img src={ImagemCarrinho} />
+        </DivIconeCarrinho>
+      </div>
+    );
   }
 }
 
