@@ -2,16 +2,24 @@ import React from 'react';
 import styled from 'styled-components'
 
 const ProdutoSingle = styled.div `
-  border: 1px dotted black;
-  margin: 10px;
+  box-shadow: 1px 1px 5px #000000;
+  border-radius: 4px;
   padding: 8px;
   button {
+    background-color: #283e4a;
+    border: none;
+    border-radius: 4px;
+    color: #e5e5e5;
+    font-weight: bold;
     width: 100%;
-    padding: 4px;
+    padding: 8px;
+    transition: 300ms;
   }
-  width: 250px;
+  button:hover {
+    background-color: #606060;
+  }
   img {
-    width: 250px;
+    width: 100%;
   }
 `
 

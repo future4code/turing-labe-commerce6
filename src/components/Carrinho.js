@@ -24,7 +24,7 @@ class Carrinho extends React.Component {
           <p> {elemento.nome}: {elemento.valor}</p>
         )
       })}
-      <p>Total: <strong>R$</strong></p>
+      <p>Total: <strong>R$ {this.props.total}</strong></p>
     </DivCarrinho>
   );
   }

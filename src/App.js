@@ -6,35 +6,35 @@ import Carrinho from './components/Carrinho'
 import ImagemCarrinho from './components/icones/carrinho.svg'
 
 const ContainerDeProdutos = styled.section`
-  display: flex;
+  display: grid;
   box-sizing: border-box;
-  justify-content: space-between;
-  max-width: 80%;
+  grid-template-columns: ${props => {
+      if(props.colunas === false){
+        return "1fr"
+      } else {
+        return "3fr 1fr"
+      }
+    }
+  };
+  max-width: 1200px;
   margin: 0 auto;
 `;
-
 const DivTopContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0px 16px;
-  max-width: 1400px;
-  min-width: 1000px;
 `;
-
 const DivBlocosProdutos = styled.div`
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
   padding-bottom: 8px;
-  
 `;
-
 const DivPrincipal = styled.div`
-
 `
-
-
 const DivIconeCarrinho = styled.div`
+  background-color: #ffffff;
   box-shadow: black 0px 0px 5px;
   width: 80px;
   height: 80px;
@@ -48,8 +48,7 @@ const DivIconeCarrinho = styled.div`
   cursor: pointer;
   img {
     width: 50px;
-  }
-`
+  }`
 
 class App extends React.Component {
   state = {
@@ -58,6 +57,8 @@ class App extends React.Component {
     valorMaximo: "",
     buscar: "",
     arrayCarrinho: [],
+    inputCrescente: "Crescente",
+    valorTotal: 0,
 
     arrayProdutos: [
       {
@@ -127,29 +128,19 @@ class App extends React.Component {
     this.setState({ buscar: event.target.value })
   }
 
+
+
   adicionaNoCarrinho = (id) => {
-    console.log(id);
     const adiciona = this.state.arrayProdutos.forEach((item) => {
       if (id === item.id) {
         this.state.arrayCarrinho.push(item)
       }
     })
-    console.log(this.state.arrayCarrinho);
+
+    let soma = this.state.arrayCarrinho.reduce( (prevValue, numero) => prevValue + numero.valor, 0 )
+
+    this.setState({valorTotal: soma})
   };
-
-  // adicionaNoCarrinho = () => {
-  //   const novoProdutoNoCarrinho = {
-  //     id: this.state.id,
-  //     nome: this.state.nome,
-  //     valor:this.state.valor
-  //   };
-
-  //   const novoArrayDoCarrinho = [novoProdutoNoCarrinho, ...this.state.arrayCarrinho]
-  //   this.setState({arrayCarrinho: novoArrayDoCarrinho});
-
-  //   console.log("CHAMOU!")
-
-  // };
 
   onChangeCrecente = (event) => {
     this.setState({inputCrescente: event.target.value})
@@ -169,21 +160,25 @@ class App extends React.Component {
 
   render() {
 
-    console.log(this.state.arrayProdutos)
+    
+    
+    let itensFiltrados = this.state.arrayProdutos
+        if(this.state.valorMinimo !== "") {
+          itensFiltrados = itensFiltrados.filter((elemento) => {
+            return elemento.valor >= this.state.valorMinimo ? true : false
+          })
+        }
+        if(this.state.valorMaximo !== "") {
+          itensFiltrados = itensFiltrados.filter((elemento) => {
+            return elemento.valor <= this.state.valorMaximo ? true : false
+          })
+        }
+        if(this.state.buscar !== "") {
+            itensFiltrados = itensFiltrados.filter((elemento) => {
+            return elemento.nome.toLowerCase().includes(this.state.buscar.toLowerCase()) ? true : false
+            })
+          }
 
-    const itensFiltrados = this.state.arrayProdutos.filter((produto) => {
-      if (this.state.valorMinimo === "" && this.state.valorMaximo === "" && this.state.buscar === "") {
-        return produto
-      } else if ((this.state.valorMinimo <= produto.valor && this.state.valorMaximo >= produto.valor)) {
-        return produto
-      } else if (this.valorMinimo <= produto.valor) {
-        return produto
-      } else if (this.valorMaximo >= produto.valor) {
-        return produto
-      } else if (this.state.buscar.toLowerCase() === produto.nome.toLowerCase()) {
-        return produto
-      }
-    })
     return (
       <div>
         <Filtro
@@ -191,7 +186,7 @@ class App extends React.Component {
           inputValorMaximo={this.onChangeMaximo}
           inputBuscar={this.funcaoBuscar}
         />
-        <ContainerDeProdutos>
+        <ContainerDeProdutos colunas={this.state.componenteCarrinho}>
           <DivPrincipal>
             <DivTopContainer>
               <p>Quantidade de produtos: {itensFiltrados.length}</p>
@@ -207,7 +202,7 @@ class App extends React.Component {
             </DivBlocosProdutos>
           </DivPrincipal>
           <div>
-            {this.state.componenteCarrinho && <Carrinho inforProduto={this.state.arrayCarrinho} />}
+            {this.state.componenteCarrinho && <Carrinho inforProduto={this.state.arrayCarrinho} total={this.state.valorTotal} />}
           </div>
         </ContainerDeProdutos>
         <DivIconeCarrinho onClick={this.renderizaCarrinho}>
