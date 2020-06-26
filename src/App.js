@@ -53,11 +53,6 @@ const DivIconeCarrinho = styled.div`
 
 class App extends React.Component {
   state = {
-    componenteCarrinho: false,
-    valorMinimo: "",
-    valorMaximo: "",
-    buscar: "",
-    arrayCarrinho: [],
 
     arrayProdutos: [
       {
@@ -108,7 +103,14 @@ class App extends React.Component {
         imagem: "https://picsum.photos/200/200?a=8",
         valor: 80
       }
-    ]
+    ],
+
+    componenteCarrinho: false,
+    valorMinimo: "",
+    valorMaximo: "",
+    buscar: "",
+    inputCrescente: "Crescente",
+    arrayCarrinho: [],
   }
 
   renderizaCarrinho = () => {
