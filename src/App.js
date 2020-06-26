@@ -139,6 +139,22 @@ class App extends React.Component {
 
   };
 
+  onChangeCrecente = (event) => {
+    this.setState({inputCrescente: event.target.value})
+      switch (this.state.inputCrescente) {
+        case 'Crescente':
+          return this.setState({arrayProdutos: this.state.arrayProdutos.sort(function(a, b) {
+                return b.valor - a.valor
+              })})
+        case 'Decrescente':
+          return this.setState({arrayProdutos: this.state.arrayProdutos.sort(function(a, b) {
+              return a.valor - b.valor
+               })})
+        default:
+          return true
+      }
+  }
+
   render() {
 
     const itensFiltrados = this.state.arrayProdutos.filter((produto) => {
@@ -165,9 +181,9 @@ class App extends React.Component {
           <DivPrincipal>
             <DivTopContainer>
               <p>Quantidade de produtos: {itensFiltrados.length}</p>
-              <select>
-                <option>Preco: Crescente</option>
-                <option>Preco: Decrescente</option>
+              <select value={this.state.inputCrescente} onChange={this.onChangeCrecente}>
+                <option value="Crescente">Preco: Crescente</option>
+                <option value="Decrescente">Preco: Decrescente</option>
               </select>
             </DivTopContainer>
             <DivBlocosProdutos>
