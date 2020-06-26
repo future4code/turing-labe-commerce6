@@ -10,11 +10,21 @@ const DivCarrinho = styled.div`
 `
 
 class Carrinho extends React.Component {
+
+  componentDidUpdate() {
+    
+  }
+
   render() {
   return (
     <DivCarrinho>
       <h1>Carrinho:</h1>
-      <p>Total: <strong>R$</strong></p>
+      {this.props.inforProduto.map((elemento) => {
+        return (
+          <p> {elemento.nome}: {elemento.valor}</p>
+        )
+      })}
+      <p>Total: <strong>R$ {this.props.total}</strong></p>
     </DivCarrinho>
   );
   }

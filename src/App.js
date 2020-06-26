@@ -6,35 +6,35 @@ import Carrinho from './components/Carrinho'
 import ImagemCarrinho from './components/icones/carrinho.svg'
 
 const ContainerDeProdutos = styled.section`
-  display: flex;
+  display: grid;
   box-sizing: border-box;
-  justify-content: space-between;
-  max-width: 80%;
+  grid-template-columns: ${props => {
+      if(props.colunas === false){
+        return "1fr"
+      } else {
+        return "3fr 1fr"
+      }
+    }
+  };
+  max-width: 1200px;
   margin: 0 auto;
 `;
-
 const DivTopContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0px 16px;
-  max-width: 1400px;
-  min-width: 1000px;
 `;
-
 const DivBlocosProdutos = styled.div`
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
   padding-bottom: 8px;
-  
 `;
-
 const DivPrincipal = styled.div`
-
 `
-
-
 const DivIconeCarrinho = styled.div`
+  background-color: #ffffff;
   box-shadow: black 0px 0px 5px;
   width: 80px;
   height: 80px;
@@ -48,8 +48,7 @@ const DivIconeCarrinho = styled.div`
   cursor: pointer;
   img {
     width: 50px;
-  }
-`
+  }`
 
 class App extends React.Component {
   state = {
@@ -58,52 +57,54 @@ class App extends React.Component {
     valorMaximo: "",
     buscar: "",
     arrayCarrinho: [],
+    inputCrescente: "Crescente",
+    valorTotal: 0,
 
     arrayProdutos: [
       {
-        id: Date.now(),
+        id: 1,
         nome: "Item A",
         imagem: "https://picsum.photos/200/200?a=1",
         valor: 10
       },
       {
-        id: Date.now(),
+        id: 2,
         nome: "Item B",
         imagem: "https://picsum.photos/200/200?a=2",
         valor: 20
       },
       {
-        id: Date.now(),
+        id: 3,
         nome: "Item C",
         imagem: "https://picsum.photos/200/200?a=3",
         valor: 30
       },
       {
-        id: Date.now(),
+        id: 4,
         nome: "Item D",
         imagem: "https://picsum.photos/200/200?a=4",
         valor: 40
       },
       {
-        id: Date.now(),
+        id: 5,
         nome: "Item E",
         imagem: "https://picsum.photos/200/200?a=5",
         valor: 50
       },
       {
-        id: Date.now(),
+        id: 6,
         nome: "Item F",
         imagem: "https://picsum.photos/200/200?a=6",
         valor: 60
       },
       {
-        id: Date.now(),
+        id: 7,
         nome: "Item G",
         imagem: "https://picsum.photos/200/200?a=7",
         valor: 70
       },
       {
-        id: Date.now(),
+        id: 8,
         nome: "Item H",
         imagem: "https://picsum.photos/200/200?a=8",
         valor: 80
@@ -127,16 +128,18 @@ class App extends React.Component {
     this.setState({ buscar: event.target.value })
   }
 
-  adicionaNoCarrinho = () => {
-    const novoProdutoNoCarrinho = {
-      id: this.state.id,
-      nome: this.state.nome,
-      valor:this.state.valor
-    };
 
-    const novoArrayDoCarrinho = [novoProdutoNoCarrinho, ...this.state.arrayCarrinho]
-    this.setState({arrayCarrinho: novoArrayDoCarrinho});
 
+  adicionaNoCarrinho = (id) => {
+    const adiciona = this.state.arrayProdutos.forEach((item) => {
+      if (id === item.id) {
+        this.state.arrayCarrinho.push(item)
+      }
+    })
+
+    let soma = this.state.arrayCarrinho.reduce( (prevValue, numero) => prevValue + numero.valor, 0 )
+
+    this.setState({valorTotal: soma})
   };
 
   onChangeCrecente = (event) => {
@@ -157,19 +160,25 @@ class App extends React.Component {
 
   render() {
 
-    const itensFiltrados = this.state.arrayProdutos.filter((produto) => {
-      if (this.state.valorMinimo === "" && this.state.valorMaximo === "" && this.state.buscar === "") {
-        return produto
-      } else if ((this.state.valorMinimo <= produto.valor && this.state.valorMaximo >= produto.valor)) {
-        return produto
-      } else if (this.valorMinimo <= produto.valor) {
-        return produto
-      } else if (this.valorMaximo >= produto.valor) {
-        return produto
-      } else if (this.state.buscar.toLowerCase() === produto.nome.toLowerCase()) {
-        return produto
-      }
-    })
+    
+    
+    let itensFiltrados = this.state.arrayProdutos
+        if(this.state.valorMinimo !== "") {
+          itensFiltrados = itensFiltrados.filter((elemento) => {
+            return elemento.valor >= this.state.valorMinimo ? true : false
+          })
+        }
+        if(this.state.valorMaximo !== "") {
+          itensFiltrados = itensFiltrados.filter((elemento) => {
+            return elemento.valor <= this.state.valorMaximo ? true : false
+          })
+        }
+        if(this.state.buscar !== "") {
+            itensFiltrados = itensFiltrados.filter((elemento) => {
+            return elemento.nome.toLowerCase().includes(this.state.buscar.toLowerCase()) ? true : false
+            })
+          }
+
     return (
       <div>
         <Filtro
@@ -177,7 +186,7 @@ class App extends React.Component {
           inputValorMaximo={this.onChangeMaximo}
           inputBuscar={this.funcaoBuscar}
         />
-        <ContainerDeProdutos>
+        <ContainerDeProdutos colunas={this.state.componenteCarrinho}>
           <DivPrincipal>
             <DivTopContainer>
               <p>Quantidade de produtos: {itensFiltrados.length}</p>
@@ -188,12 +197,12 @@ class App extends React.Component {
             </DivTopContainer>
             <DivBlocosProdutos>
               {itensFiltrados.map((elemento) => {
-                return <Produto key={elemento.id} lista={elemento} />
+                return <Produto key={elemento.id} lista={elemento} addCarrinho={() => this.adicionaNoCarrinho(elemento.id)}/>
               })}
             </DivBlocosProdutos>
           </DivPrincipal>
           <div>
-            {this.state.componenteCarrinho && <Carrinho inforProduto={this.state.arrayProdutos} />}
+            {this.state.componenteCarrinho && <Carrinho inforProduto={this.state.arrayCarrinho} total={this.state.valorTotal} />}
           </div>
         </ContainerDeProdutos>
         <DivIconeCarrinho onClick={this.renderizaCarrinho}>
