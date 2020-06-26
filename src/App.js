@@ -61,49 +61,49 @@ class App extends React.Component {
 
     arrayProdutos: [
       {
-        id: Date.now(),
+        id: 1,
         nome: "Item A",
         imagem: "https://picsum.photos/200/200?a=1",
         valor: 10
       },
       {
-        id: Date.now(),
+        id: 2,
         nome: "Item B",
         imagem: "https://picsum.photos/200/200?a=2",
         valor: 20
       },
       {
-        id: Date.now(),
+        id: 3,
         nome: "Item C",
         imagem: "https://picsum.photos/200/200?a=3",
         valor: 30
       },
       {
-        id: Date.now(),
+        id: 4,
         nome: "Item D",
         imagem: "https://picsum.photos/200/200?a=4",
         valor: 40
       },
       {
-        id: Date.now(),
+        id: 5,
         nome: "Item E",
         imagem: "https://picsum.photos/200/200?a=5",
         valor: 50
       },
       {
-        id: Date.now(),
+        id: 6,
         nome: "Item F",
         imagem: "https://picsum.photos/200/200?a=6",
         valor: 60
       },
       {
-        id: Date.now(),
+        id: 7,
         nome: "Item G",
         imagem: "https://picsum.photos/200/200?a=7",
         valor: 70
       },
       {
-        id: Date.now(),
+        id: 8,
         nome: "Item H",
         imagem: "https://picsum.photos/200/200?a=8",
         valor: 80
@@ -127,17 +127,29 @@ class App extends React.Component {
     this.setState({ buscar: event.target.value })
   }
 
-  adicionaNoCarrinho = () => {
-    const novoProdutoNoCarrinho = {
-      id: this.state.id,
-      nome: this.state.nome,
-      valor:this.state.valor
-    };
-
-    const novoArrayDoCarrinho = [novoProdutoNoCarrinho, ...this.state.arrayCarrinho]
-    this.setState({arrayCarrinho: novoArrayDoCarrinho});
-
+  adicionaNoCarrinho = (id) => {
+    console.log(id);
+    const adiciona = this.state.arrayProdutos.forEach((item) => {
+      if (id === item.id) {
+        this.state.arrayCarrinho.push(item)
+      }
+    })
+    console.log(this.state.arrayCarrinho);
   };
+
+  // adicionaNoCarrinho = () => {
+  //   const novoProdutoNoCarrinho = {
+  //     id: this.state.id,
+  //     nome: this.state.nome,
+  //     valor:this.state.valor
+  //   };
+
+  //   const novoArrayDoCarrinho = [novoProdutoNoCarrinho, ...this.state.arrayCarrinho]
+  //   this.setState({arrayCarrinho: novoArrayDoCarrinho});
+
+  //   console.log("CHAMOU!")
+
+  // };
 
   onChangeCrecente = (event) => {
     this.setState({inputCrescente: event.target.value})
@@ -156,6 +168,8 @@ class App extends React.Component {
   }
 
   render() {
+
+    console.log(this.state.arrayProdutos)
 
     const itensFiltrados = this.state.arrayProdutos.filter((produto) => {
       if (this.state.valorMinimo === "" && this.state.valorMaximo === "" && this.state.buscar === "") {
@@ -188,12 +202,12 @@ class App extends React.Component {
             </DivTopContainer>
             <DivBlocosProdutos>
               {itensFiltrados.map((elemento) => {
-                return <Produto key={elemento.id} lista={elemento} />
+                return <Produto key={elemento.id} lista={elemento} addCarrinho={() => this.adicionaNoCarrinho(elemento.id)}/>
               })}
             </DivBlocosProdutos>
           </DivPrincipal>
           <div>
-            {this.state.componenteCarrinho && <Carrinho inforProduto={this.state.arrayProdutos} />}
+            {this.state.componenteCarrinho && <Carrinho inforProduto={this.state.arrayCarrinho} />}
           </div>
         </ContainerDeProdutos>
         <DivIconeCarrinho onClick={this.renderizaCarrinho}>
