@@ -140,12 +140,13 @@ class App extends React.Component {
   };
 
   render() {
+
     const itensFiltrados = this.state.arrayProdutos.filter((produto) => {
       if (this.state.valorMinimo === "" && this.state.valorMaximo === "" && this.state.buscar === "") {
         return produto
       } else if ((this.state.valorMinimo <= produto.valor && this.state.valorMaximo >= produto.valor)) {
         return produto
-      }else if (this.valorMinimo <= produto.valor) {
+      } else if (this.valorMinimo <= produto.valor) {
         return produto
       } else if (this.valorMaximo >= produto.valor) {
         return produto
@@ -171,7 +172,7 @@ class App extends React.Component {
             </DivTopContainer>
             <DivBlocosProdutos>
               {itensFiltrados.map((elemento) => {
-                return <Produto lista={elemento} />
+                return <Produto key={elemento.id} lista={elemento} />
               })}
             </DivBlocosProdutos>
           </DivPrincipal>
